@@ -1,21 +1,52 @@
 {% load static tailwind_tags %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Django Tailwind</title>
     {% tailwind_css %}
-</head>
-<body>
-    <nav >
-        nav
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md py-3">
+      <div class="max-w-screen-xl mx-auto flex items-center justify-between">
+        <!-- Logo and Title -->
+        <div class="flex items-center space-x-2">
+          <img
+            src="{% static 'images/eco-route-logo.png' %}"
+            alt="EcoRouteX Logo"
+            class="h-11 object-contain"
+          />
+          <span class="text-3xl font-bold">EcoRouteX</span>
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="flex space-x-6 text-gray-500 text-xl">
+          <a href="{% url 'home' %}" class="hover:text-black hover:font-semibold">Home</a>
+          <a href="#" class="hover:text-black hover:font-semibold">Rutas</a>
+          <a href="#" class="hover:text-black hover:font-semibold">Análisis</a>
+          <a href="#" class="hover:text-black hover:font-semibold">Reportes</a>
+          <a href="#" class="text-red-500 hover:text-red-700">Cerrar sesión</a>
+        </div>
+      </div>
     </nav>
-    <div>
-        {% block content %}
-        <!-- content -->
-        {% endblock %}
+
+    <!-- Main Content -->
+    <div class="flex-grow">
+      {% block content %}
+      <!-- content -->
+      {% endblock %}
     </div>
-</body>
+
+    <!-- Footer -->
+    <footer class="bg-emerald-900 text-white py-10">
+      <div class="max-w-screen-xl mx-auto text-center space-y-2">
+        <h1 class="text-2xl font-bold">EcoRouteX</h1>
+        <p class="font-semibold">Complejidad Algorítmica</p>
+        <p class="text-sm text-gray-300">Todos los derechos reservados</p>
+      </div>
+    </footer>
+  </body>
 </html>
