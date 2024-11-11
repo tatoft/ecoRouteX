@@ -890,6 +890,11 @@ select {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 
+.bg-background {
+  --tw-bg-opacity: 1;
+  background-color: rgb(242 249 247 / var(--tw-bg-opacity));
+}
+
 .object-contain {
   -o-object-fit: contain;
      object-fit: contain;

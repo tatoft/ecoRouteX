@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>EcoRouteX | Login</title>
+    <title>EcoRouteX | SignUp</title>
     {% tailwind_css %}
   </head>
   <body
@@ -22,8 +22,7 @@
     </div>
 
     <section class="w-full max-w-md mx-auto bg-white rounded-lg shadow-md p-8">
-      <!-- Login Form -->
-      <p class="font-bold text-4xl mb-8">Ingresar</p>
+      <p class="font-bold text-4xl mb-8">Registrarse</p>
 
       <form>
         <div class="space-y-3">
@@ -48,15 +47,8 @@
           </div>
         </div>
         <div class="space-y-5 mt-10">
-          <button type="submit" class="btn-primary">Ingresar</button>
-
-          <button
-            type="button"
-            onclick="location.href='{% url 'signup' %}'"
-            class="btn-secondary"
-          >
-            Registrarme
-          </button>
+          <button type="submit" class="btn-secondary">Registrarme</button>
+          <button type="button" onclick="location.href='{% url 'login' %}'" class="btn-primary">Ya tengo cuenta</button>
         </div>
       </form>
     </section>
