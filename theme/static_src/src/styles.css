@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.form-input {
+    @apply block w-full border border-teal-100 rounded-md p-2 focus:ring focus:ring-opacity-50 focus:ring-green-300;
+}
+
+.form-label {
+    @apply block text-lg font-medium text-black text-xl;
+}
+
+.btn-primary {
+    @apply w-full bg-emerald-900 text-white text-xl py-2 rounded-md font-bold hover:bg-emerald-800 transition-all;
+}
+
+.btn-secondary {
+    @apply w-full bg-lightMint text-primaryGreen text-xl py-2 rounded-md font-bold hover:bg-opacity-90 transition-all;
+}

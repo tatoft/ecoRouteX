@@ -1,8 +1,58 @@
-{% extends "base.html" %}
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>EcoRouteX | Login</title>
+    {% tailwind_css %}
+  </head>
+  <body
+    class="bg-emerald-50 flex flex-col justify-center items-center min-h-screen"
+  >
+    <!-- Logo and Title -->
+    <div class="flex items-center justify-center mb-10">
+      <img
+        src="{% static 'images/eco-route-logo.png' %}"
+        alt="logo"
+        class="object-contain h-16"
+      />
+      <p class="font-bold text-4xl text-center">EcoRouteX</p>
+    </div>
 
-{% block content %}
-<div class="container mx-auto mt-5">
-    <h2 class="text-3xl font-bold text-gray-500">Login Page</h2>
-    
-</div>
-{% endblock %}
+    <section class="w-full max-w-md mx-auto bg-white rounded-lg shadow-md p-8">
+      <!-- Login Form -->
+      <p class="font-bold text-4xl mb-8">Ingresar</p>
+
+      <form>
+        <div class="space-y-3">
+          <div>
+            <label for="email" class="form-label">Correo electrónico</label>
+            <input
+              id="email"
+              type="email"
+              placeholder="Ingresa tu correo electrónico"
+              class="form-input"
+            />
+          </div>
+
+          <div>
+            <label for="password" class="form-label">Contraseña</label>
+            <input
+              id="password"
+              type="password"
+              placeholder="Ingresa tu contraseña"
+              class="form-input"
+            />
+          </div>
+        </div>
+        <div class="space-y-5 mt-10">
+          <button type="submit" class="btn-primary">Ingresar</button>
+
+          <button type="button" class="btn-secondary">Registrarme</button>
+        </div>
+      </form>
+    </section>
+  </body>
+</html>
