@@ -1,5 +1,48 @@
 {% extends "base.html" %} {% block content %}
-<section>
-    <h1 class="text-6xl">hola Analisis</h1>
-</section>
+
+<main class="bg-white font-sans">
+
+    <div class="max-w-7xl mx-auto p-6">
+        <h1 class="text-3xl font-bold mb-6">Reporte de Tráfico</h1>
+
+        <!-- Gráficos -->
+        <div class="bg-border flex justify-between mb-8">
+            <div class="bg-gray-100 flex w-1/2 pr-4 items-center">
+                <img src="routes/img/img-grafico-circular.png" class="w-1/2 rounded-lg border border-gray-300 mr-4">
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">Distribución Tipos de vehículos</h2>
+                    <p>20% Motos</p>
+                    <p>40% Carros</p>
+                    <p>60% Scooters</p>
+                </div>
+            </div>
+            
+            <!-- Gráfico de barras -->
+            <div class="flex w-1/2 pl-4 items-center">
+                <img src="ruta/a/tu/imagen_barras.png" class="w-1/2 rounded-lg border border-gray-300 mr-4">
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">Tráfico de el Día</h2>
+                    <p>Horas punta: 08:00 - 10:00 y 17:00 - 19:00</p>
+                    <p>Mayor tráfico en la mañana</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hora punta -->
+        <div class="flex items-center w-64 text-black p-4 rounded-lg mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01m6.938-4A8.015 8.015 0 0112 20a8.015 8.015 0 01-6.938-4M12 4a8.015 8.015 0 016.938 4M12 4a8.015 8.015 0 00-6.938 4m0 0A8.015 8.015 0 0112 20a8.015 8.015 0 016.938-4"/>
+            </svg>
+            <span class="font-semibold text-xl mr-2">4 PM  Hora punta</span>
+        </div>
+
+        <!-- Mapa con texto al costado -->
+        <div class="">
+            <img src="ruta/a/tu/imagen_mapa.png" alt="Mapa de Tráfico" class="w-1/2 rounded-lg border border-gray-300 mr-4">
+        </div>
+    </div>
+
+</main>
+
+
 {% endblock %}
