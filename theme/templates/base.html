@@ -6,6 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Django Tailwind</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css"
+    />
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+
     {% tailwind_css %}
   </head>
   <body class="flex flex-col min-h-screen">
@@ -24,7 +34,11 @@
 
         <!-- Navigation Links -->
         <div class="flex space-x-6 text-gray-500 text-xl">
-          <a href="{% url 'home' %}" class="hover:text-black hover:font-semibold">Home</a>
+          <a
+            href="{% url 'home' %}"
+            class="hover:text-black hover:font-semibold"
+            >Home</a
+          >
           <a href="#" class="hover:text-black hover:font-semibold">Rutas</a>
           <a href="#" class="hover:text-black hover:font-semibold">Análisis</a>
           <a href="#" class="hover:text-black hover:font-semibold">Reportes</a>

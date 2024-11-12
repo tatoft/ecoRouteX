@@ -2,8 +2,63 @@
 <section class="max-w-screen-xl mx-auto">
   <div class="mt-10 space-y-2">
     <p class="font-bold text-4xl">Panel de Control de Entregas</p>
-    <p class="text-xl">Monitoreo en tiempo real del estado de las entregas y rendimiento logístico</p>
+    <p class="text-xl">
+      Monitoreo en tiempo real del estado de las entregas y rendimiento
+      logístico
+    </p>
   </div>
-</section>
 
+  <!-- Div para el Mapa -->
+  <div id="map" style="height: 500px; width: 100%; margin-top: 20px"></div>
+
+  <script>
+    function initMap() {
+        // Configura el mapa centrado en Nueva Delhi (por ejemplo)
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 12,
+            center: { lat: 28.6139, lng: 77.2090 } // Cambia a una ubicación lógica
+        });
+
+        // Coordenadas de las entregas desde Django
+        const deliveries = {{ deliveries|safe }};
+
+        // Coloca marcadores y líneas en el mapa para cada entrega
+        deliveries.forEach(delivery => {
+            const storeMarker = new google.maps.Marker({
+                position: { lat: delivery.store_latitude, lng: delivery.store_longitude },
+                map: map,
+                title: "Ubicación de la Tienda",
+                icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+            });
+
+            const dropMarker = new google.maps.Marker({
+                position: { lat: delivery.drop_latitude, lng: delivery.drop_longitude },
+                map: map,
+                title: "Destino de Entrega",
+                icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+            });
+
+            // Crear una línea entre la tienda y el destino
+            const routePath = new google.maps.Polyline({
+                path: [
+                    { lat: delivery.store_latitude, lng: delivery.store_longitude },
+                    { lat: delivery.drop_latitude, lng: delivery.drop_longitude }
+                ],
+                geodesic: true,
+                strokeColor: "#FF0000",
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
+            routePath.setMap(map);
+        });
+    }
+  </script>
+
+  <!-- Cargar el script de Google Maps con tu clave de API -->
+  <script
+    async
+    defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcNyxk3o2sCPSXzVadN_DeVx5ZJiJ-e_4&callback=initMap"
+  ></script>
+</section>
 {% endblock %}
