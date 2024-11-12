@@ -41,7 +41,10 @@ INSTALLED_APPS = [
     'django_browser_reload',
     'theme',
     "authentication",
-    "home"
+    "home",
+    "routes",
+    "analysis",
+    "reports",
 ]
 
 INTERNAL_IPS = [
