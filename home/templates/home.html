@@ -1,5 +1,4 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <section class="max-w-screen-xl mx-auto">
   <div class="mt-10 space-y-2">
     <p class="font-bold text-4xl">Panel de Control de Entregas</p>
@@ -13,10 +12,11 @@
 
   <script>
     function initMap() {
-      const mapCenter = { lat: {{ map_center.lat }}, lng: {{ map_center.lng }} };
+      // Coordenadas predeterminadas de la ciudad (ejemplo: Hyderabad)
+      const mapCenter = { lat: 17.385044, lng: 78.486671 }; // Mantén tu ubicación preferida
       const map = new google.maps.Map(document.getElementById("map"), {
         zoom: 12,
-        center: mapCenter,
+        center: mapCenter, // El mapa se mantiene centrado en la ciudad correcta
       });
 
       const directionsService = new google.maps.DirectionsService();
@@ -75,6 +75,15 @@
 
       directionsService.route(request, function(result, status) {
         if (status === google.maps.DirectionsStatus.OK) {
+          // Mejorando la ruta visualmente con colores suaves y una línea más atractiva
+          const routePath = new google.maps.Polyline({
+            path: result.routes[0].overview_path,
+            geodesic: true,
+            strokeColor: "#FF6347", // Usamos un color más cálido y visible para la ruta
+            strokeOpacity: 0.7,      // Ligera opacidad para suavizar la visualización
+            strokeWeight: 4         // Grosor de la línea para hacerlo más visible
+          });
+          routePath.setMap(map);
           directionsRenderer.setDirections(result);
         } else {
           console.error("Error al calcular la ruta: " + status);
@@ -83,7 +92,6 @@
     }
   </script>
 
-  <!-- Cargar el script de Google Maps con tu clave de API, asegurándote de que incluya la biblioteca de geometría para el cálculo de distancias -->
   <script
     async
     defer
