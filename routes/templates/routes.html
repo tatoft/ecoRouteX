@@ -1,0 +1,92 @@
+{% extends "base.html" %} {% block content %}
+<main class="bg-white p-8">
+    <div class="max-w-7xl mx-auto p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-4xl font-bold">Rutas Activas</h1>
+            <div class="flex items-center space-x-4">
+                <label class="font-semibold">Buscar rutas por orden ID</label>
+                <input type="text" placeholder="Ingresa el ID de la orden" class="border border-gray-300 p-2 rounded-md focus:outline-none">
+                <button class="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800">Buscar</button>
+            </div>
+        </div>
+        <table class="w-full text-left border-collapse mb-10">
+            <thead>
+                <tr>
+                    <th class="border-b-2 border-gray-400 py-2 px-4">Conductor(a)</th>
+                    <th class="border-b-2 border-gray-400 py-2 px-4">Orden ID</th>
+                    <th class="border-b-2 border-gray-400 py-2 px-4">Almacén</th>
+                    <th class="border-b-2 border-gray-400 py-2 px-4">Tienda</th>
+                    <th class="border-b-2 border-gray-400 py-2 px-4">Estado</th>
+                    <th class="border-b-2 border-gray-400 py-2 px-4">Acción</th>
+                </tr>
+            </thead>
+            <tbody class="text-lg">
+                <tr>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">Ale Luna</td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">84024242</td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">San Isidro</td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">San Miguel</td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">
+                        <span class="bg-lightMint text-primaryGreen font-bold px-5 py-2 rounded-lg text-sm">En proceso</span>
+                    </td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">
+                        <a href="#" class="text-greenDart font-bold underline">Ver ruta</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">Belen Yaya</td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">84024242</td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">San Isidro</td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">San Miguel</td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">
+                        <span class="bg-orangeState text-lightOrange font-bold px-4 py-2 rounded-lg text-sm">Cambió ruta</span>
+                    </td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">
+                        <a href="#" class="text-greenDart font-bold underline">Ver ruta</a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">Valeria Aguilar</td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">84024242</td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">San Isidro</td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">San Miguel</td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">
+                        <span class="bg-lightMint text-primaryGreen font-bold px-5 py-2 rounded-lg text-sm">En proceso</span>
+                    </td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">
+                        <a href="#" class="text-greenDart font-bold underline">Ver ruta</a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">Augusto Pancito</td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">84024242</td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">San Isidro</td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">San Miguel</td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">
+                        <span class="bg-orangeState text-lightOrange font-bold px-4 py-2 rounded-lg text-sm">Cambió ruta</span>
+                    </td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">
+                        <a href="#" class="text-greenDart font-bold underline">Ver ruta</a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">Franz Barrionuevo</td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">84024242</td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">San Isidro</td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">San Miguel</td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">
+                        <span class="bg-lightMint text-primaryGreen font-bold px-5 py-2 rounded-lg text-sm">En proceso</span>
+                    </td>
+                    <td class="border-b-2 border-gray-300 py-3 px-4">
+                        <a href="#" class="text-greenDart font-bold underline">Ver ruta</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+{% endblock %}

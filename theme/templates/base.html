@@ -39,9 +39,9 @@
             class="hover:text-black hover:font-semibold"
             >Home</a
           >
-          <a href="#" class="hover:text-black hover:font-semibold">Rutas</a>
-          <a href="#" class="hover:text-black hover:font-semibold">Análisis</a>
-          <a href="#" class="hover:text-black hover:font-semibold">Reportes</a>
+          <a href="{% url 'routes' %}" class="hover:text-black hover:font-semibold">Rutas</a>
+          <a href="{% url 'analysis' %}" class="hover:text-black hover:font-semibold">Análisis</a>
+          <a href="{% url 'reports' %}" class="hover:text-black hover:font-semibold">Reportes</a>
           <a href="#" class="text-red-500 hover:text-red-700">Cerrar sesión</a>
         </div>
       </div>
