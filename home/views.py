@@ -65,21 +65,11 @@ def home(request):
             'drop_longitude': delivery.drop_longitude
         })
 
-    # Construir el grafo de rutas
+    # Construir el grafo de rutas (una vez y reutilizable)
     graph = build_graph(deliveries_qs)
 
-    # Calcular rutas óptimas para cada entrega
+    # Optimización: no calcular rutas a menos que el usuario haga clic
     optimized_routes = []
-    for delivery in deliveries_qs:
-        store = (delivery.store_latitude, delivery.store_longitude)
-        drop = (delivery.drop_latitude, delivery.drop_longitude)
-        optimal_path = find_optimal_route(graph, store, drop)
-
-        if optimal_path:
-            optimized_routes.append({
-                'path': optimal_path,
-                'distance': sum(haversine_distance(optimal_path[i], optimal_path[i + 1]) for i in range(len(optimal_path) - 1))
-            })
 
     # Calcular estadísticas clave
     total_deliveries = deliveries_qs.count()
@@ -90,7 +80,7 @@ def home(request):
     context = {
         'map_center': {'lat': map_center['avg_lat'], 'lng': map_center['avg_lng']},
         'deliveries': deliveries_data,
-        'optimized_routes': optimized_routes,
+        'optimized_routes': optimized_routes,  # Las rutas no se calculan hasta que se necesiten
         'punctuality_rate': round(punctuality_rate, 2),
         'general_delays': round(general_delays, 2),
         'performance_score': round(performance_score, 2) if performance_score is not None else 'N/A',
