@@ -4,89 +4,84 @@ from datetime import datetime
 from django.core.exceptions import ValidationError
 from .models import Delivery
 from django.db.models import Avg
-import networkx as nx
 from geopy.distance import geodesic
+import networkx as nx
 
-# A* Algorithm Implementation
-def astar(graph, start, end):
-    from heapq import heappop, heappush
+def haversine_distance(coord1, coord2):
+    """
+    Calcula la distancia en kilómetros entre dos puntos geográficos usando la fórmula de Haversine.
+    """
+    return geodesic(coord1, coord2).kilometers
 
-    # Priority queue
-    queue = []
-    heappush(queue, (0, start))
-    
-    # Store distances
-    costs = {start: 0}
-    parents = {start: None}
+def build_graph(deliveries):
+    """
+    Construye un grafo utilizando NetworkX con las ubicaciones de las entregas.
+    """
+    graph = nx.Graph()
 
-    while queue:
-        current_cost, current_node = heappop(queue)
+    # Añadir nodos y aristas para cada entrega
+    for delivery in deliveries:
+        store = (delivery.store_latitude, delivery.store_longitude)
+        drop = (delivery.drop_latitude, delivery.drop_longitude)
 
-        if current_node == end:
-            # Reconstruct path
-            path = []
-            while current_node is not None:
-                path.append(current_node)
-                current_node = parents[current_node]
-            return path[::-1]  # Reverse the path
+        # Asegurar que cada nodo está en el grafo
+        if store not in graph:
+            graph.add_node(store)
+        if drop not in graph:
+            graph.add_node(drop)
 
-        for neighbor, weight in graph[current_node].items():
-            new_cost = current_cost + weight
-            if neighbor not in costs or new_cost < costs[neighbor]:
-                costs[neighbor] = new_cost
-                priority = new_cost + heuristic(neighbor, end)
-                heappush(queue, (priority, neighbor))
-                parents[neighbor] = current_node
+        # Añadir una arista con el peso como la distancia entre los nodos
+        distance = haversine_distance(store, drop)
+        graph.add_edge(store, drop, weight=distance)
 
-    return []  # No path found
+    return graph
 
-# Heuristic function (using geodesic distance)
-def heuristic(node, goal):
-    return geodesic(node, goal).meters
-
-# Django view
+def find_optimal_route(graph, start, end):
+    """
+    Calcula la ruta más óptima entre dos nodos usando el algoritmo de A*.
+    """
+    try:
+        path = nx.astar_path(graph, start, end, heuristic=haversine_distance, weight='weight')
+        return path
+    except nx.NetworkXNoPath:
+        return None
 
 def home(request):
-    # Query all deliveries with valid coordinates
     deliveries_qs = Delivery.objects.filter(store_latitude__isnull=False, drop_latitude__isnull=False)
 
-    # Create a graph with stores and drops as nodes
-    graph = {}
-    for delivery in deliveries_qs:
-        store_coords = (delivery.store_latitude, delivery.store_longitude)
-        drop_coords = (delivery.drop_latitude, delivery.drop_longitude)
-
-        if store_coords not in graph:
-            graph[store_coords] = {}
-        if drop_coords not in graph:
-            graph[drop_coords] = {}
-
-        # Use geodesic distance as weight
-        distance = geodesic(store_coords, drop_coords).meters
-        graph[store_coords][drop_coords] = distance
-        graph[drop_coords][store_coords] = distance
-
-    # Calculate routes using A*
-    astar_routes = []
-    for delivery in deliveries_qs:
-        store_coords = (delivery.store_latitude, delivery.store_longitude)
-        drop_coords = (delivery.drop_latitude, delivery.drop_longitude)
-
-        # Calculate A* path
-        path = astar(graph, store_coords, drop_coords)
-        astar_routes.append({
-            'path': path,
-            'store': store_coords,
-            'drop': drop_coords
-        })
-
-    # Calculate map center
+    # Calcular el centro del mapa basado en el promedio de las coordenadas de todas las entregas seleccionadas
     map_center = deliveries_qs.aggregate(
         avg_lat=Avg('store_latitude'),
         avg_lng=Avg('store_longitude')
     )
 
-    # Statistics
+    # Preparar las conexiones (solo tienda -> destino para cada entrega)
+    deliveries_data = []
+    for delivery in deliveries_qs:
+        deliveries_data.append({
+            'store_latitude': delivery.store_latitude,
+            'store_longitude': delivery.store_longitude,
+            'drop_latitude': delivery.drop_latitude,
+            'drop_longitude': delivery.drop_longitude
+        })
+
+    # Construir el grafo de rutas
+    graph = build_graph(deliveries_qs)
+
+    # Calcular rutas óptimas para cada entrega
+    optimized_routes = []
+    for delivery in deliveries_qs:
+        store = (delivery.store_latitude, delivery.store_longitude)
+        drop = (delivery.drop_latitude, delivery.drop_longitude)
+        optimal_path = find_optimal_route(graph, store, drop)
+
+        if optimal_path:
+            optimized_routes.append({
+                'path': optimal_path,
+                'distance': sum(haversine_distance(optimal_path[i], optimal_path[i + 1]) for i in range(len(optimal_path) - 1))
+            })
+
+    # Calcular estadísticas clave
     total_deliveries = deliveries_qs.count()
     punctuality_rate = (deliveries_qs.filter(delivery_time__lte=30).count() / total_deliveries * 100) if total_deliveries > 0 else 0
     general_delays = (deliveries_qs.filter(delivery_time__gt=30).count() / total_deliveries * 100) if total_deliveries > 0 else 0
@@ -94,13 +89,44 @@ def home(request):
 
     context = {
         'map_center': {'lat': map_center['avg_lat'], 'lng': map_center['avg_lng']},
-        'astar_routes': astar_routes,
+        'deliveries': deliveries_data,
+        'optimized_routes': optimized_routes,
         'punctuality_rate': round(punctuality_rate, 2),
         'general_delays': round(general_delays, 2),
         'performance_score': round(performance_score, 2) if performance_score is not None else 'N/A',
     }
-
     return render(request, 'home.html', context)
 
-# Template Changes in JavaScript
-# Use `astar_routes` from the context to plot the A* paths on the map
+def import_csv_to_db():
+    file_path = 'data/amazon_delivery.csv'  # Cambia esta ruta al archivo
+    with open(file_path, newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        deliveries = []
+        for row in reader:
+            try:
+                delivery = Delivery(
+                    order_id=row['Order_ID'],
+                    agent_age=int(row['Agent_Age']),
+                    agent_rating=float(row['Agent_Rating']) if row['Agent_Rating'] else None,
+                    store_latitude=float(row['Store_Latitude']),
+                    store_longitude=float(row['Store_Longitude']),
+                    drop_latitude=float(row['Drop_Latitude']),
+                    drop_longitude=float(row['Drop_Longitude']),
+                    order_date=datetime.strptime(row['Order_Date'], '%Y-%m-%d').date(),
+                    order_time=datetime.strptime(row['Order_Time'], '%H:%M:%S').time() if row['Order_Time'] else None,
+                    pickup_time=datetime.strptime(row['Pickup_Time'], '%H:%M:%S').time() if row['Pickup_Time'] else None,
+                    weather=row['Weather'] if row['Weather'] else None,
+                    traffic=row['Traffic'],
+                    vehicle=row['Vehicle'],
+                    area=row['Area'],
+                    delivery_time=int(row['Delivery_Time']),
+                    category=row['Category'],
+                )
+                delivery.full_clean()  # Valida el objeto
+                deliveries.append(delivery)
+            except (ValueError, ValidationError) as e:
+                print(f"Error en la fila: {row}, Error: {e}")
+                continue
+
+        # Inserta todos los registros válidos a la vez
+        Delivery.objects.bulk_create(deliveries)
