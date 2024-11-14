@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .form-input {
-    @apply block w-full border border-teal-100 rounded-md p-2 focus:ring focus:ring-opacity-50 focus:ring-green-300;
+    @apply w-full border border-teal-100 rounded-md p-2 focus:ring focus:ring-opacity-50 focus:ring-green-300;
 }
 
 .form-label {

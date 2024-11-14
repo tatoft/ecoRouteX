@@ -167,6 +167,13 @@ Entiendo. Vamos a desglosar **cómo exactamente cada sección de la web app cont
    - **Recalcular Ruta**: Al tener la capacidad de ejecutar el algoritmo A* en tiempo real, el sistema recalcula y propone una ruta alternativa más rápida en caso de bloqueos o tráfico.
 
    **Ejemplo**: Si se detecta un accidente en la ruta de una entrega específica, el equipo puede hacer clic en “Recalcular Ruta” para que el sistema sugiera un camino alternativo más rápido, asegurando que el pedido llegue en el menor tiempo posible.
+   1. **Lista de Entregas Activas**
+   - **Posición**: Panel lateral izquierdo.
+   - **Contenido**:
+     - Lista de entregas en curso con información clave de cada entrega (ID, destino, tiempo estimado de llegada, condición del tráfico actual).
+   - **Interactividad**:
+     - Al hacer clic en una entrega, se muestra la ruta correspondiente en el mapa y detalles adicionales.
+     
 
    **Impacto**: Estas secciones permiten **ajustar cada entrega en tiempo real**, asegurando que los repartidores puedan evitar el tráfico y llegar a tiempo. Esto no solo mejora la puntualidad, sino que también ahorra combustible y reduce el estrés del equipo.
 
