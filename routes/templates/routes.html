@@ -18,7 +18,6 @@
       </div>
     </div>
 
-    <!-- Tabla de entregas activas -->
     <table class="w-full text-left border-collapse mb-10" id="routesTable">
       <thead>
         <tr>
@@ -53,7 +52,11 @@
             </div>
           </td>
           <td class="border-b-2 border-gray-300 py-3 px-4">
-            <a href="#" class="text-greenDart font-bold underline">Ver ruta</a>
+            <a
+              href="{% url 'detail' route.order_id %}"
+              class="text-greenDart font-bold underline"
+              >Ver ruta</a
+            >
           </td>
         </tr>
         {% empty %}
@@ -66,7 +69,6 @@
       </tbody>
     </table>
 
-    <!-- Paginación -->
     <div class="flex justify-center mt-4">
       <div class="pagination">
         <span class="mr-2">
@@ -85,7 +87,6 @@
     </div>
   </div>
 </main>
-
 <script>
   function filterTable() {
     const searchInput = document
@@ -96,13 +97,12 @@
 
     rows.forEach((row, index) => {
       const orderId = orderIdSpans[index].textContent.toLowerCase();
-
       if (orderId.includes(searchInput)) {
         row.style.display = "";
         highlightMatch(orderIdSpans[index], searchInput);
       } else {
         row.style.display = "none";
-        orderIdSpans[index].innerHTML = orderIdSpans[index].textContent; // Reset content
+        orderIdSpans[index].innerHTML = orderIdSpans[index].textContent;
       }
     });
   }
@@ -117,5 +117,4 @@
     spanElement.innerHTML = highlightedOrderId;
   }
 </script>
-
 {% endblock %}

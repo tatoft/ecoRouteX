@@ -1,0 +1,145 @@
+{% extends "base.html" %} {% block content %}
+<main class="bg-gray-100 font-sans">
+  <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <!-- Información del pedido -->
+    <div class="flex justify-between items-center mb-4">
+      <div>
+        <h1 class="text-2xl font-bold">{{ route.order_id }}</h1>
+        <p class="text-gray-700 mt-2 text-xs">{{ route.area }}</p>
+      </div>
+      <button class="bg-greenDart text-white px-6 py-2 rounded-md text-sm">
+        Ver historial de rutas
+      </button>
+    </div>
+
+    <!-- Mapa -->
+    <div class="mb-8">
+      <div
+        id="map"
+        style="height: 400px; width: 100%"
+        class="rounded-lg border border-gray-300"
+      ></div>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="grid grid-cols-3 gap-6">
+      <!-- Tiempo estimado -->
+      <div class="bg-white rounded-lg p-6 shadow-md text-center">
+        <div class="grid grid-cols-3 items-center">
+          <!-- Ícono de moto -->
+          <div class="flex justify-center">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/743/743007.png"
+              alt="Motocicleta"
+              class="w-12 h-12"
+            />
+          </div>
+
+          <!-- Tiempo de entrega -->
+          <div>
+            <p class="text-xl font-bold">30 min</p>
+            <p class="text-gray-400 text-sm">Tiempo estimado</p>
+          </div>
+
+          <!-- Ícono de ubicación -->
+          <div class="flex justify-center">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/684/684908.png"
+              alt="Ubicación"
+              class="w-12 h-12"
+            />
+          </div>
+        </div>
+        <p class="text-black font-bold mt-4">Juanito llegará pronto...</p>
+      </div>
+
+      <!-- Detalles de la entrega -->
+      <div class="bg-gray-50 rounded-lg p-4 shadow-md">
+        <p class="text-xs text-gray-500">Destinatario</p>
+        <h2 class="text-black font-bold text-lg mb-4">
+          Información de la entrega
+        </h2>
+        <div class="grid grid-cols-2 gap-y-2">
+          <p class="font-semibold">Tipo:</p>
+          <p>{{ route.category|default:"No especificado" }}</p>
+          <p class="font-semibold">Destino:</p>
+          <p>{{ route.area }}</p>
+          <p class="font-semibold">Producto:</p>
+          <p>{{ route.product|default:"No especificado" }}</p>
+        </div>
+      </div>
+
+      <!-- Estado del tráfico -->
+      <div class="bg-gray-50 rounded-lg p-4 shadow-md">
+        <p class="text-xs text-gray-500">Condición del tráfico</p>
+        <h2 class="text-black font-bold text-lg mb-4">
+          {{ traffic_level.label }}
+        </h2>
+        <div class="flex space-x-1 mb-4">
+          <!-- Generar las barras de tráfico -->
+          {% for bar in traffic_bars %}
+          <div class="w-4 h-8 {{ traffic_level.color }} rounded"></div>
+          {% endfor %}
+        </div>
+        <div class="flex items-center mt-4">
+          <span
+            class="w-3 h-3 {{ traffic_level.color }} rounded-full mr-2"
+          ></span>
+          <p class="text-black">{{ traffic_level.label }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script del mapa -->
+  <script>
+    function initMap() {
+      const storeLocation = { lat: {{ store.lat }}, lng: {{ store.lng }} };
+      const dropLocation = { lat: {{ drop.lat }}, lng: {{ drop.lng }} };
+
+      const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 14,
+        center: storeLocation,
+      });
+
+      const directionsService = new google.maps.DirectionsService();
+      const directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
+
+      const request = {
+        origin: storeLocation,
+        destination: dropLocation,
+        travelMode: google.maps.TravelMode.DRIVING,
+      };
+
+      directionsService.route(request, (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          directionsRenderer.setDirections(result);
+        } else {
+          console.error("Error al trazar la ruta con Google Directions: " + status);
+        }
+      });
+
+      new google.maps.Marker({
+        position: storeLocation,
+        map: map,
+        title: "Tienda (Origen)",
+        icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+      });
+
+      new google.maps.Marker({
+        position: dropLocation,
+        map: map,
+        title: "Destino",
+        icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+      });
+    }
+  </script>
+
+  <!-- Cargar la API de Google Maps -->
+  <script
+    async
+    defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA3x4I-dCjkwhEshAQlH5BOhQS1YY7ds5I&callback=initMap&libraries=geometry"
+  ></script>
+</main>
+{% endblock %}
