@@ -7,9 +7,6 @@
         <h1 class="text-2xl font-bold">{{ route.order_id }}</h1>
         <p class="text-gray-700 mt-2 text-xs">{{ route.area }}</p>
       </div>
-      <button class="bg-greenDart text-white px-6 py-2 rounded-md text-sm">
-        Ver historial de rutas
-      </button>
     </div>
 
     <!-- Mapa -->
@@ -37,7 +34,7 @@
 
           <!-- Tiempo de entrega -->
           <div>
-            <p class="text-xl font-bold">30 min</p>
+            <p class="text-xl font-bold">{{ estimated_time }} min</p>
             <p class="text-gray-400 text-sm">Tiempo estimado</p>
           </div>
 
@@ -50,7 +47,9 @@
             />
           </div>
         </div>
-        <p class="text-black font-bold mt-4">Juanito llegará pronto...</p>
+        <p class="text-black font-bold mt-4">
+          {{ driver_name }} llegará pronto...
+        </p>
       </div>
 
       <!-- Detalles de la entrega -->
