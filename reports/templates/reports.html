@@ -1,59 +1,60 @@
 {% extends "base.html" %} {% block content %}
-<main class="bg-white    font-sans">
-
-    <div class="max-w-5xl mx-auto p-6 space-y-8">
-        <!-- Resumen -->
-        <div class="bg-gray-50 rounded-lg p-6 ">
-            <p class="text-xs text-gray-500">Hoy</p>
-            <h2 class="text-2xl text-black font-bold mb-4">Resumen</h2>
-            <div class="grid grid-cols-4 gap-4">
-                <div>
-                    <p class="text-xs text-gray-500">Número de entregas</p>
-                    <p class="text-5xl font-bold">120</p>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500">On-Time Rate</p>
-                    <p class="text-5xl font-bold">95%</p>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500">Average Time</p>
-                    <p class="text-5xl font-bold">4.86s</p>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500">Eco score</p>
-                    <p class="text-5xl font-bold">85/100</p>
-                </div>
-            </div>
-        </div>
-
+<main class="bg-white font-sans py-6">
+  <div class="max-w-7xl mx-auto px-4">
+    <!-- Resumen -->
+    <div class="bg-gray-50 rounded-lg p-6 mb-8 shadow">
+      <p class="text-xs text-gray-500">Hoy</p>
+      <h2 class="text-2xl text-black font-bold mb-4">Resumen</h2>
+      <div class="grid grid-cols-4 gap-4">
         <div>
-            <h2 class="text-3xl font-bold mb-4">Últimos movimientos</h2>
-            <div class="bg-white rounded-lg shadow-md">
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-2xl font-semibold mb-4">Últimos movimientos</h2>
-                    <div class="grid grid-cols-6 gap-y-4 text-gray-700">
-                        <!-- Encabezados -->
-                        <div class="text-black font-semibold text-base">Repartidores</div>
-                        <div class="text-black font-semibold text-base">Salida</div>
-                        <div class="text-black font-semibold text-base">Destino</div>
-                        <div class="text-black font-semibold text-base">Tiempo de entrega</div>
-                        <div class="text-black font-semibold text-base">km recorridos</div>
-                        <div class="text-black font-semibold text-base">Tipo de vehículo</div>
-                
-                        <!-- Fila de datos -->
-                        <div class="text-xs">Rodrigo Ramos</div>
-                        <div class="text-xs">Av Salaverry, San Isidro</div>
-                        <div class="text-xs">Av La Marina, San Miguel</div>
-                        <div class="text-xs">20 min</div>
-                        <div class="text-xs">10 kilómetros</div>
-                        <div class="text-xs">Scooter</div>
-                
-                    </div>
-                </div>
-                
-            </div>
+          <p class="text-xs text-gray-500">Número de entregas</p>
+          <p class="text-5xl font-bold">{{ total_deliveries }}</p>
         </div>
+        <div>
+          <p class="text-xs text-gray-500">On-Time Rate</p>
+          <p class="text-5xl font-bold">{{ on_time_rate }}%</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-500">Average Time</p>
+          <p class="text-5xl font-bold">{{ avg_time }} min</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-500">Eco score</p>
+          <p class="text-5xl font-bold">{{ eco_score }}/100</p>
+        </div>
+      </div>
     </div>
 
+    <!-- Últimos movimientos -->
+    <div class="mt-8">
+      <h2 class="text-3xl font-bold mb-4">Últimos movimientos</h2>
+      <div class="bg-white">
+        <table class="table-auto w-full bg-white rounded-lg shadow">
+          <thead>
+            <tr class="bg-gray-300">
+              <th class="px-4 py-2">Repartidores</th>
+              <th class="px-4 py-2">Salida</th>
+              <th class="px-4 py-2">Destino</th>
+              <th class="px-4 py-2">Tiempo de entrega</th>
+              <th class="px-4 py-2">km recorridos</th>
+              <th class="px-4 py-2">Tipo de vehículo</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for delivery in delivery_data %}
+            <tr class="border-b">
+              <td class="px-4 py-2">{{ delivery.driver }}</td>
+              <td class="px-4 py-2">{{ delivery.start }}</td>
+              <td class="px-4 py-2">{{ delivery.end }}</td>
+              <td class="px-4 py-2">{{ delivery.time }} min</td>
+              <td class="px-4 py-2">{{ delivery.distance }}</td>
+              <td class="px-4 py-2">{{ delivery.vehicle }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </main>
 {% endblock %}
