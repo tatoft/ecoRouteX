@@ -6,16 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>EcoRouteX</title>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css"
-    />
-    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
-
     {% tailwind_css %}
   </head>
   <body class="flex flex-col min-h-screen">
@@ -67,11 +57,13 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-emerald-900 text-white py-10 mt-16">
-      <div class="max-w-screen-xl mx-auto text-center space-y-2">
-        <h1 class="text-2xl font-bold">EcoRouteX</h1>
-        <p class="font-semibold">Complejidad Algorítmica</p>
-        <p class="text-sm text-gray-300">Todos los derechos reservados</p>
+    <footer class="bg-emerald-900 text-white py-6 sm:py-10 mt-16">
+      <div class="max-w-screen-xl mx-auto text-center space-y-2 px-4 sm:px-6 lg:px-8">
+        <h1 class="text-xl sm:text-2xl font-bold">EcoRouteX</h1>
+        <p class="text-sm sm:text-base font-semibold">Complejidad Algorítmica</p>
+        <p class="text-xs sm:text-sm text-gray-300">
+          &copy; 2024 EcoRouteX. Todos los derechos reservados.
+        </p>
       </div>
     </footer>
   </body>

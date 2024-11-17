@@ -2,8 +2,8 @@
 <main class="bg-white p-8">
   <div class="max-w-7xl mx-auto p-6">
     <div class="flex justify-between items-center mb-4">
-      <h1 class="text-4xl font-bold">Rutas Activas</h1>
-      <div class="flex items-center space-x-2">
+      <h1 class="md:text-4xl text-2xl font-bold">Rutas Activas</h1>
+      <div class="flex items-center space-x-2 md:mt-0 mt-4">
         <label class="form-label whitespace-nowrap"
           >Buscar rutas por orden ID</label
         >
@@ -18,56 +18,57 @@
       </div>
     </div>
 
-    <table class="w-full text-left border-collapse mb-10" id="routesTable">
-      <thead>
-        <tr>
-          <th class="border-b-2 border-gray-400 py-2 px-4">Conductor(a)</th>
-          <th class="border-b-2 border-gray-400 py-2 px-4">Orden ID</th>
-          <th class="border-b-2 border-gray-400 py-2 px-4">Área</th>
-          <th class="border-b-2 border-gray-400 py-2 px-4">Tienda</th>
-          <th class="border-b-2 border-gray-400 py-2 px-4">
-            Estado de tráfico
-          </th>
-          <th class="border-b-2 border-gray-400 py-2 px-4">Acción</th>
-        </tr>
-      </thead>
-      <tbody class="text-lg">
-        {% for route in page_obj %}
-        <tr class="hover:bg-gray-100 transition-all">
-          <td class="border-b-2 border-gray-300 py-3 px-4">
-            {{ route.driver_name }}
-          </td>
-          <td class="border-b-2 border-gray-300 py-3 px-4 order-id-cell">
-            <span class="order-id">{{ route.order_id }}</span>
-          </td>
-          <td class="border-b-2 border-gray-300 py-3 px-4">{{ route.area }}</td>
-          <td class="border-b-2 border-gray-300 py-3 px-4">
-            {{ route.store_latitude }}, {{ route.store_longitude }}
-          </td>
-          <td class="border-b-2 border-gray-300 py-1 px-4">
-            <div
-              class="py-2 rounded-md text-sm text-center font-bold {{ route.traffic_class }}"
-            >
-              {{ route.traffic }}
-            </div>
-          </td>
-          <td class="border-b-2 border-gray-300 py-3 px-4">
-            <a
-              href="{% url 'detail' route.order_id %}"
-              class="text-greenDart font-bold underline"
-              >Ver ruta</a
-            >
-          </td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="6" class="text-center py-3">
-            No se encontraron rutas activas.
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse mb-10" id="routesTable">
+        <thead>
+          <tr class="bg-gray-200">
+            <th class="border-b-2 border-gray-400 py-2 px-4">Conductor(a)</th>
+            <th class="border-b-2 border-gray-400 py-2 px-4">Orden ID</th>
+            <th class="border-b-2 border-gray-400 py-2 px-4">Área</th>
+            <th class="border-b-2 border-gray-400 py-2 px-4">Tienda</th>
+            <th class="border-b-2 border-gray-400 py-2 px-4">Estado de tráfico</th>
+            <th class="border-b-2 border-gray-400 py-2 px-4">Acción</th>
+          </tr>
+        </thead>
+        <tbody class="text-lg">
+          {% for route in page_obj %}
+          <tr class="hover:bg-gray-100 transition-all">
+            <td class="border-b-2 border-gray-300 py-3 px-4">
+              {{ route.driver_name }}
+            </td>
+            <td class="border-b-2 border-gray-300 py-3 px-4 order-id-cell">
+              <span class="order-id">{{ route.order_id }}</span>
+            </td>
+            <td class="border-b-2 border-gray-300 py-3 px-4">{{ route.area }}</td>
+            <td class="border-b-2 border-gray-300 py-3 px-4">
+              {{ route.store_latitude }}, {{ route.store_longitude }}
+            </td>
+            <td class="border-b-2 border-gray-300 py-1 px-4">
+              <div
+                class="py-2 rounded-md text-sm text-center font-bold {{ route.traffic_class }}"
+              >
+                {{ route.traffic }}
+              </div>
+            </td>
+            <td class="border-b-2 border-gray-300 py-3 px-4">
+              <a
+                href="{% url 'detail' route.order_id %}"
+                class="text-green-600 font-bold underline hover:text-green-800"
+                >Ver ruta</a
+              >
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="text-center py-3 text-gray-500">
+              No se encontraron rutas activas.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    
 
     <div class="flex justify-center mt-4">
       <div class="pagination">
