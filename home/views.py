@@ -5,46 +5,88 @@ from django.core.exceptions import ValidationError
 from .models import Delivery
 from django.db.models import Avg
 from geopy.distance import geodesic
-import networkx as nx
 
-def haversine_distance(coord1, coord2):
+def calculate_haversine(coord1, coord2):
     """
     Calcula la distancia en kilómetros entre dos puntos geográficos usando la fórmula de Haversine.
     """
     return geodesic(coord1, coord2).kilometers
 
+def astar(graph, start, end, heuristic_func):
+    """
+    Implementación del algoritmo A* para encontrar la ruta más corta.
+
+    :param graph: Un diccionario que representa el grafo, donde las claves son nodos y los valores son diccionarios
+                  de vecinos con sus pesos (ejemplo: {node: {neighbor: weight}}).
+    :param start: Nodo inicial.
+    :param end: Nodo destino.
+    :param heuristic_func: Función heurística para estimar la distancia desde un nodo al destino.
+    :return: Una lista con los nodos en la ruta más corta o None si no hay ruta.
+    """
+    from heapq import heappop, heappush
+
+    open_set = []  # Usaremos una cola de prioridad para los nodos abiertos
+    heappush(open_set, (0, start))  # (prioridad, nodo)
+
+    came_from = {}  # Para reconstruir la ruta más corta
+    g_score = {node: float('inf') for node in graph}  # Costo del inicio al nodo
+    g_score[start] = 0
+
+    f_score = {node: float('inf') for node in graph}  # Costo estimado (g + h)
+    f_score[start] = heuristic_func(start, end)
+
+    while open_set:
+        current = heappop(open_set)[1]
+
+        if current == end:
+            # Reconstruir la ruta más corta
+            path = []
+            while current in came_from:
+                path.append(current)
+                current = came_from[current]
+            path.append(start)
+            return path[::-1]  # Invertir el camino
+
+        for neighbor, weight in graph[current].items():
+            tentative_g_score = g_score[current] + weight
+
+            if tentative_g_score < g_score[neighbor]:
+                # Este camino al vecino es mejor que el anterior
+                came_from[neighbor] = current
+                g_score[neighbor] = tentative_g_score
+                f_score[neighbor] = tentative_g_score + heuristic_func(neighbor, end)
+
+                if not any(neighbor == item[1] for item in open_set):
+                    heappush(open_set, (f_score[neighbor], neighbor))
+
+    return None  # No se encontró ruta
+
 def build_graph(deliveries):
     """
-    Construye un grafo utilizando NetworkX con las ubicaciones de las entregas.
+    Construye un grafo basado en un diccionario para usar en el algoritmo A*.
     """
-    graph = nx.Graph()
-
-    # Añadir nodos y aristas para cada entrega
+    graph = {}
     for delivery in deliveries:
         store = (delivery.store_latitude, delivery.store_longitude)
         drop = (delivery.drop_latitude, delivery.drop_longitude)
 
-        # Asegurar que cada nodo está en el grafo
         if store not in graph:
-            graph.add_node(store)
+            graph[store] = {}
         if drop not in graph:
-            graph.add_node(drop)
+            graph[drop] = {}
 
-        # Añadir una arista con el peso como la distancia entre los nodos
-        distance = haversine_distance(store, drop)
-        graph.add_edge(store, drop, weight=distance)
+        distance = calculate_haversine(store, drop)
+        graph[store][drop] = distance
+        graph[drop][store] = distance  # Asumimos que es bidireccional
 
     return graph
 
-def find_optimal_route(graph, start, end):
+def find_optimal_route(deliveries, start, end):
     """
-    Calcula la ruta más óptima entre dos nodos usando el algoritmo de A*.
+    Encuentra la ruta más corta usando el algoritmo A*.
     """
-    try:
-        path = nx.astar_path(graph, start, end, heuristic=haversine_distance, weight='weight')
-        return path
-    except nx.NetworkXNoPath:
-        return None
+    graph = build_graph(deliveries)
+    return astar(graph, start, end, heuristic_func=calculate_haversine)
 
 def home(request):
     deliveries_qs = Delivery.objects.filter(store_latitude__isnull=False, drop_latitude__isnull=False)
@@ -86,37 +128,3 @@ def home(request):
         'performance_score': round(performance_score, 2) if performance_score is not None else 'N/A',
     }
     return render(request, 'home.html', context)
-
-def import_csv_to_db():
-    file_path = 'data/amazon_delivery.csv'  # Cambia esta ruta al archivo
-    with open(file_path, newline='') as csvfile:
-        reader = csv.DictReader(csvfile)
-        deliveries = []
-        for row in reader:
-            try:
-                delivery = Delivery(
-                    order_id=row['Order_ID'],
-                    agent_age=int(row['Agent_Age']),
-                    agent_rating=float(row['Agent_Rating']) if row['Agent_Rating'] else None,
-                    store_latitude=float(row['Store_Latitude']),
-                    store_longitude=float(row['Store_Longitude']),
-                    drop_latitude=float(row['Drop_Latitude']),
-                    drop_longitude=float(row['Drop_Longitude']),
-                    order_date=datetime.strptime(row['Order_Date'], '%Y-%m-%d').date(),
-                    order_time=datetime.strptime(row['Order_Time'], '%H:%M:%S').time() if row['Order_Time'] else None,
-                    pickup_time=datetime.strptime(row['Pickup_Time'], '%H:%M:%S').time() if row['Pickup_Time'] else None,
-                    weather=row['Weather'] if row['Weather'] else None,
-                    traffic=row['Traffic'],
-                    vehicle=row['Vehicle'],
-                    area=row['Area'],
-                    delivery_time=int(row['Delivery_Time']),
-                    category=row['Category'],
-                )
-                delivery.full_clean()  # Valida el objeto
-                deliveries.append(delivery)
-            except (ValueError, ValidationError) as e:
-                print(f"Error en la fila: {row}, Error: {e}")
-                continue
-
-        # Inserta todos los registros válidos a la vez
-        Delivery.objects.bulk_create(deliveries)
