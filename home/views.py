@@ -128,3 +128,37 @@ def home(request):
         'performance_score': round(performance_score, 2) if performance_score is not None else 'N/A',
     }
     return render(request, 'home.html', context)
+
+def import_csv_to_db():
+    file_path = 'data/amazon_delivery.csv'  # Cambia esta ruta al archivo
+    with open(file_path, newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        deliveries = []
+        for row in reader:
+            try:
+                delivery = Delivery(
+                    order_id=row['Order_ID'],
+                    agent_age=int(row['Agent_Age']),
+                    agent_rating=float(row['Agent_Rating']) if row['Agent_Rating'] else None,
+                    store_latitude=float(row['Store_Latitude']),
+                    store_longitude=float(row['Store_Longitude']),
+                    drop_latitude=float(row['Drop_Latitude']),
+                    drop_longitude=float(row['Drop_Longitude']),
+                    order_date=datetime.strptime(row['Order_Date'], '%Y-%m-%d').date(),
+                    order_time=datetime.strptime(row['Order_Time'], '%H:%M:%S').time() if row['Order_Time'] else None,
+                    pickup_time=datetime.strptime(row['Pickup_Time'], '%H:%M:%S').time() if row['Pickup_Time'] else None,
+                    weather=row['Weather'] if row['Weather'] else None,
+                    traffic=row['Traffic'],
+                    vehicle=row['Vehicle'],
+                    area=row['Area'],
+                    delivery_time=int(row['Delivery_Time']),
+                    category=row['Category'],
+                )
+                delivery.full_clean()  # Valida el objeto
+                deliveries.append(delivery)
+            except (ValueError, ValidationError) as e:
+                print(f"Error en la fila: {row}, Error: {e}")
+                continue
+
+        # Inserta todos los registros válidos a la vez
+        Delivery.objects.bulk_create(deliveries)
